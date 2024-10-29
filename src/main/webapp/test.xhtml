@@ -1,21 +1,66 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="jakarta.faces.facelets"
-      xmlns:f="jakarta.faces.core"
-      xmlns:h="jakarta.faces.html"
-      xmlns:p="primefaces">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="jakarta.faces.facelets" xmlns:f="jakarta.faces.core"
+    xmlns:h="jakarta.faces.html" xmlns:p="primefaces">
 
-    <h:head>
-        <title>PrimeFaces Test</title>
-        <h:outputScript name="test.js" />
-        <h:outputStylesheet name="test.css" />
-    </h:head>
-    <h:body>
+<f:metadata>
+    <f:viewAction action="#{officeLayerView.onLoad()}" />
+</f:metadata>
 
-        <h1>#{testView.string}</h1>
-        <h:form id="frmTest">
+<h:head>
+    <title>PrimeFaces Test</title>
+    <h:outputScript name="test.js" />
+    <h:outputStylesheet name="test.css" />
+</h:head>
+<h:body>
 
+    <h1>JpaLazyModel with DataTable</h1>
+    <div class="card">
+        <h:form id="officeLayerForm">
+            <!-- Accordion panel for filter section -->
+            <p:accordionPanel widgetVar="basic" id="filterAccordionPanel">
+                <p:tab title="Filter">
+                    <p:outputPanel class="grid formgrid ui-fluid row-gap-3">
+                        <!-- Global filter -->
+                        <div class="field lg:col-3 col-12">
+                            <p:outputLabel for="@next" styleClass="font-normal text-lg" value="Name" />
+                            <p:inputText value="#{officeLayerView.globalFilterValue}" />
+                        </div>
+
+                        <!-- Filter based on column -->
+                        <div class="field lg:col-3 col-12">
+                            <p:outputLabel for="@next" styleClass="font-normal text-lg" value="Name" />
+                            <p:inputText value="#{officeLayerView.columnFilterValue}" />
+                        </div>
+
+                        <!-- Search button to apply filters -->
+                        <div class="col-6 lg:col-2 flex align-items-end">
+                            <p:commandButton icon="pi pi-search" styleClass="ui-button-info" value="search"
+                                oncomplete="PF('officeLayerTable').filter()" />
+                        </div>
+                    </p:outputPanel>
+                </p:tab>
+            </p:accordionPanel>
+
+            <p:dataTable widgetVar="officeLayerTable" id="officeLayerTable" lazy="true" cellNavigation="false"
+                value="#{officeLayerView.officeLayerList}" var="officeLayer" reflow="true" rows="5" paginator="true"
+                paginatorAlwaysVisible="false" paginatorPosition="bottom">
+                <!-- Filter event listener-->
+                <h:inputHidden id="globalFilter" />
+
+                <p:ajax event="filter" listener="#{officeLayerView.onFilter}" />
+
+                <p:column headerText="Name">
+                    <h:outputText value="#{officeLayer.name}" />
+                </p:column>
+
+                <p:column headerText="Name locale">
+                    <h:outputText value="#{officeLayer.nameLocale}" />
+                </p:column>
+
+            </p:dataTable>
         </h:form>
+    </div>
 
-    </h:body>
+</h:body>
+
 </html>
